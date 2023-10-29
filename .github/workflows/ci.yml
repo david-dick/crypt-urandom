@@ -34,8 +34,16 @@ jobs:
         cpanm --installdeps .
         cpanm Test::CheckManifest
 
-    - name: Run tests
       # RELEASE_TESTING is not enabled as some of the tests take way too long (more than 30 minutes)
+    - name: Run tests under gmake (on windows)
+      if: ${{ startsWith(matrix.runner, 'windows-') }}
+      run: |
+        perl Makefile.PL
+        gmake
+        gmake test
+
+    - name: Run tests under make (not windows)
+      if: ${{ ! startsWith(matrix.runner, 'windows-') }}
       run: |
         perl Makefile.PL
         make
