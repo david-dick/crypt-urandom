@@ -332,12 +332,7 @@ None reported.
 
 =head1 BUGS AND LIMITATIONS
 
-No bugs have been reported.
-
-Please report any bugs or feature requests to
-C<bug-crypt-urandom@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org>.
-
+To report a bug, or view the current list of bugs, please visit L<https://github.com/david-dick/crypt-urandom/issues>
 
 =head1 AUTHOR
 
