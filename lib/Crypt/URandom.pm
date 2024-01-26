@@ -15,20 +15,25 @@ our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 our $VERSION  = '0.39';
 our @CARP_NOT = ('Crypt::URandom');
 
-sub CRYPT_SILENT      { return 64; }               # hex 40
-sub PROV_RSA_FULL     { return 1; }
-sub VERIFY_CONTEXT    { return 4_026_531_840; }    # hex 'F0000000'
-sub W2K_MAJOR_VERSION { return 5; }
-sub W2K_MINOR_VERSION { return 0; }
-sub SINGLE_QUOTE      { return q[']; }
+## no critic (ProhibitConstantPragma)
+# using constant for the speed benefit of constant-folding of values
 
-sub PATH {
+use constant CRYPT_SILENT      => 64;               # hex 40
+use constant PROV_RSA_FULL     => 1;
+use constant VERIFY_CONTEXT    => 4_026_531_840;    # hex 'F0000000'
+use constant W2K_MAJOR_VERSION => 5;
+use constant W2K_MINOR_VERSION => 0;
+
+use constant OS_WIN32 => $OSNAME eq 'MSWin32';
+use constant PATH     => do {
     my $path = '/dev/urandom';
     if ( $OSNAME eq 'freebsd' ) {
         $path = '/dev/random';    # FreeBSD's /dev/random is non-blocking
     }
-    return $path;
-}
+    $path;
+};
+
+## use critic
 
 my $_initialised;
 my $_context;
@@ -37,7 +42,7 @@ my $_rtlgenrand;
 my $_urandom_handle;
 
 sub _init {
-    if ( $OSNAME eq 'MSWin32' ) {
+    if ( OS_WIN32() ) {
         require Win32;
         require Win32::API;
         require Win32::API::Type;
@@ -100,11 +105,8 @@ _RTLGENRANDOM_PROTO_
     else {
         require FileHandle;
         $_urandom_handle = FileHandle->new( PATH(), Fcntl::O_RDONLY() )
-          or Carp::croak( 'Failed to open '
-              . SINGLE_QUOTE()
-              . PATH()
-              . SINGLE_QUOTE()
-              . " for reading:$OS_ERROR" );
+          or Carp::croak(
+            q[Failed to open '] . PATH() . qq['. " for reading:$OS_ERROR] );
         binmode $_urandom_handle;
     }
     return;
@@ -137,7 +139,7 @@ sub _urandom {
         _init();
         $_initialised = $PROCESS_ID;
     }
-    if ( $OSNAME eq 'MSWin32' ) {
+    if ( OS_WIN32() ) {
         my $buffer = chr(0) x $length;
         if ($_cryptgenrandom) {
 
@@ -164,21 +166,15 @@ sub _urandom {
             else {
                 $_urandom_handle = undef;
                 $_initialised    = undef;
-                Carp::croak( "Only read $result bytes from "
-                      . SINGLE_QUOTE()
-                      . PATH()
-                      . SINGLE_QUOTE() );
+                Carp::croak(
+                    qq[Only read $result bytes from '] . PATH() . q['] );
             }
         }
         else {
             my $error = $OS_ERROR;
             $_urandom_handle = undef;
             $_initialised    = undef;
-            Carp::croak( 'Failed to read from '
-                  . SINGLE_QUOTE()
-                  . PATH()
-                  . SINGLE_QUOTE()
-                  . ":$error" );
+            Carp::croak( q[Failed to read from '] . PATH() . qq[':$error] );
         }
     }
 }
