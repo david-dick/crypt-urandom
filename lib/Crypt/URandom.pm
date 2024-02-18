@@ -12,7 +12,7 @@ our @EXPORT_OK = qw(
 );
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 
-our $VERSION  = '0.39';
+our $VERSION  = '0.40';
 our @CARP_NOT = ('Crypt::URandom');
 
 ## no critic (ProhibitConstantPragma)
@@ -189,7 +189,7 @@ Crypt::URandom - Provide non blocking randomness
 
 =head1 VERSION
 
-This document describes Crypt::URandom version 0.39
+This document describes Crypt::URandom version 0.40
 
 
 =head1 SYNOPSIS
