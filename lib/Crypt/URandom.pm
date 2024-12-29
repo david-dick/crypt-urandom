@@ -17,9 +17,12 @@ our @CARP_NOT = ('Crypt::URandom');
 
 BEGIN {
     our $VERSION = '0.40';
-    require XSLoader;
+    eval {
+        require XSLoader;
 
-    XSLoader::load( __PACKAGE__, $VERSION );
+        XSLoader::load( __PACKAGE__, $VERSION );
+    } or do {
+    };
 }
 
 ## no critic (ProhibitConstantPragma)
