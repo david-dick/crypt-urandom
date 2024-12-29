@@ -124,8 +124,6 @@ _RTLGENRANDOM_PROTO_
             $_rtlgenrand = $rtlgenrand;
         }
     }
-    elsif ( GETRANDOM_AVAILABLE() ) {
-    }
     else {
         require FileHandle;
         $_urandom_handle = FileHandle->new( PATH(), Fcntl::O_RDONLY() )
@@ -159,9 +157,13 @@ sub _urandom {
         Carp::croak(
             'The length argument must be supplied and must be an integer');
     }
-    if ( !( ( defined $_initialised ) && ( $_initialised == $PROCESS_ID ) ) ) {
-        _init();
-        $_initialised = $PROCESS_ID;
+    if ( !GETRANDOM_AVAILABLE() ) {
+        if (
+            !( ( defined $_initialised ) && ( $_initialised == $PROCESS_ID ) ) )
+        {
+            _init();
+            $_initialised = $PROCESS_ID;
+        }
     }
     if ( OS_WIN32() ) {
         my $buffer = chr(0) x $length;
