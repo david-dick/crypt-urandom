@@ -242,9 +242,8 @@ OR
 This Module is intended to provide
 an interface to the strongest available source of non-blocking 
 randomness on the current platform.  Platforms currently supported are
-anything supporting /dev/urandom and versions of Windows greater than 
-or equal to Windows 2000.
-
+anything supporting getrandom(2), /dev/urandom and versions of Windows greater
+than or equal to Windows 2000.
 
 =head1 SUBROUTINES/METHODS
 
@@ -257,7 +256,8 @@ or equal to Windows 2000.
 This function accepts an integer and returns a string of the same size
 filled with random data.  The first call will initialize the native
 cryptographic libraries (if necessary) and load all the required Perl libraries.
-This call is a buffered read on non Win32 platforms.
+This call is a buffered read on non Win32 platforms that do not support getrandom(2)
+or equivalent.
 
 =item C<urandom_ub>
 
@@ -266,7 +266,8 @@ This call is a buffered read on non Win32 platforms.
 This function accepts an integer and returns a string of the same size
 filled with random data.  The first call will initialize the native
 cryptographic libraries (if necessary) and load all the required Perl libraries.
-This call is a unbuffered sysread on non Win32 platforms.
+This call is a unbuffered sysread on non Win32 platforms that do not support
+getrandom(2) or equivalent.
 
 =back
 
