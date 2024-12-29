@@ -88,6 +88,7 @@ _OUT_
 				$result = system { $Config{cc} } $Config{cc}, '-o', $binary_name, $test_file_name;
 				if ($result == 0) {
 					unlink $binary_name or die "Failed to unlink $binary_name:$!";
+					$optional{DEFINE} = '-DUNKNOWN_ENVIRONMENT';
 				} else {
 					$optional{DEFINE} = '-DNO_COMPILER_FOUND';
 				}

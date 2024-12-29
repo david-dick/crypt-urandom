@@ -16,6 +16,11 @@ if ($^O eq 'MSWin32') {
 		$optional{C} = [];
 		$optional{MYEXTLIB} = q[];
 		delete $optional{DEFINE};
+	} elsif (($optional{DEFINE}) && ($optional{DEFINE} eq '-DUNKNOWN_ENVIRONMENT')) {
+		$optional{OBJECT} = q[];
+		$optional{C} = [];
+		$optional{MYEXTLIB} = q[];
+		delete $optional{DEFINE};
 	}
 }
 
