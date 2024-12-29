@@ -2,10 +2,16 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
+my %optional;
+if ($^O ne 'MSWin32') {
+	eval `cat ./check_random.pl`;
+}
+
 WriteMakefile(
     NAME                => 'Crypt::URandom',
     AUTHOR              => 'David Dick <ddick@cpan.org>',
     VERSION_FROM        => 'lib/Crypt/URandom.pm',
+    %optional,
     ABSTRACT_FROM       => 'lib/Crypt/URandom.pm',
     ( $ExtUtils::MakeMaker::VERSION >= 6.3002
         ? ( 'LICENSE' => 'perl' )

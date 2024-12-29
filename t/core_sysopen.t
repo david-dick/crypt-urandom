@@ -13,21 +13,27 @@ SKIP: {
 		use warnings;
 		require POSIX;
 		my $required_error_message = q[(?:] . (quotemeta POSIX::strerror(POSIX::EACCES())) . q[|Permission[ ]denied)];
-		require Crypt::URandom;
-		my $generated = 0;
-		eval {
-			Crypt::URandom::urandom(1);
-			$generated = 1;
-		};
-		chomp $@;
-		ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when sysopen is overridden:$@");
-		$generated = 0;
-		eval {
-			Crypt::URandom::urandom(1);
-			$generated = 1;
-		};
-		chomp $@;
-		ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when sysopen is overridden twice:$@");
+		my %optional;
+		eval `cat ./check_random.pl`;
+		if ($optional{DEFINE}) {
+			skip("Found getrandom in $^O", 1);
+		} else {
+			require Crypt::URandom;
+			my $generated = 0;
+			eval {
+				Crypt::URandom::urandom(1);
+				$generated = 1;
+			};
+			chomp $@;
+			ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when sysopen is overridden:$@");
+			$generated = 0;
+			eval {
+				Crypt::URandom::urandom(1);
+				$generated = 1;
+			};
+			chomp $@;
+			ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when sysopen is overridden twice:$@");
+		}
 	}
 }
 done_testing();

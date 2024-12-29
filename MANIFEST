@@ -1,4 +1,5 @@
 Changes
+check_random.pl
 MANIFEST
 Makefile.PL
 README
@@ -14,5 +15,6 @@ t/core_partial_read.t
 t/core_read.t
 t/core_sysopen.t
 t/manifest.t
+URandom.xs
 META.yml                                 Module meta-data (added by MakeMaker)
 META.json                                Module JSON meta-data (added by MakeMaker)

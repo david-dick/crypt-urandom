@@ -10,10 +10,17 @@ our @EXPORT_OK = qw(
   urandom
   urandom_ub
 );
+
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 
-our $VERSION  = '0.40';
 our @CARP_NOT = ('Crypt::URandom');
+
+BEGIN {
+    our $VERSION = '0.40';
+    require XSLoader;
+
+    XSLoader::load( __PACKAGE__, $VERSION );
+}
 
 ## no critic (ProhibitConstantPragma)
 # using constant for the speed benefit of constant-folding of values
@@ -31,6 +38,21 @@ use constant PATH     => do {
         $path = '/dev/random';    # FreeBSD's /dev/random is non-blocking
     }
     $path;
+};
+use constant GETRANDOM_AVAILABLE => do {
+    my $result = 0;
+    eval {
+        my $correct_length = 2;
+        my $actual_length =
+          crypt_urandom_getrandom( my $buffer = q[], $correct_length );
+        if ( $correct_length == $actual_length ) {
+            $result = 1;
+        }
+        $result;
+    } or do {
+        $result = undef;
+    };
+    $result;
 };
 
 ## use critic
@@ -102,6 +124,8 @@ _RTLGENRANDOM_PROTO_
             $_rtlgenrand = $rtlgenrand;
         }
     }
+    elsif ( GETRANDOM_AVAILABLE() ) {
+    }
     else {
         require FileHandle;
         $_urandom_handle = FileHandle->new( PATH(), Fcntl::O_RDONLY() )
@@ -156,6 +180,15 @@ sub _urandom {
             }
         }
         return $buffer;
+    }
+    elsif ( GETRANDOM_AVAILABLE() ) {
+        my $result = crypt_urandom_getrandom( my $buffer = q[], $length );
+        if ( $result == $length ) {
+            return $buffer;
+        }
+        else {
+            Carp::croak(qq[Only read $result bytes from getrandom]);
+        }
     }
     else {
         my $result = $_urandom_handle->$type( my $buffer, $length );
