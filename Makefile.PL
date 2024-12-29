@@ -4,7 +4,11 @@ use ExtUtils::MakeMaker;
 
 
 my %optional;
-if ($^O ne 'MSWin32') {
+if ($^O eq 'MSWin32') {
+	$optional{OBJECT} = q[];
+	$optional{C} = [];
+	$optional{MYEXTLIB} = q[];
+} else {
 	eval `cat ./check_random.pl`;
 	if (($optional{DEFINE}) && ($optional{DEFINE} eq '-DNO_COMPILER_FOUND')) {
 		# figured this out from ExtUtils/MM_Unix.pm in has_link_code
