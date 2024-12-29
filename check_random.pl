@@ -40,6 +40,44 @@ _OUT_
 	if ($result == 0) {
 		unlink $binary_name or die "Failed to unlink $binary_name:$!";
 		$optional{DEFINE} = '-DHAVE_CRYPT_URANDOM_SYSCALL_GETRANDOM';
+	} else {
+		open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
+		print FOO <<'_OUT_';
+#include <sys/random.h>
+
+int main(void)
+{
+        char buf[5];
+        int l = 5;
+        int r = getentropy(buf, l);
+        return 0;
+}
+_OUT_
+		close FOO or die "Failed to close $test_file_name:$!";
+		$result = system { $Config{cc} } $Config{cc}, '-o', $binary_name, $test_file_name;
+		if ($result == 0) {
+			unlink $binary_name or die "Failed to unlink $binary_name:$!";
+			$optional{DEFINE} = '-DHAVE_CRYPT_URANDOM_NATIVE_GETENTROPY';
+		} else {
+			open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
+			print FOO <<'_OUT_';
+#include <unistd.h>
+
+int main(void)
+{
+        char buf[5];
+        int l = 5;
+        int r = getentropy(buf, l);
+        return 0;
+}
+_OUT_
+			close FOO or die "Failed to close $test_file_name:$!";
+			$result = system { $Config{cc} } $Config{cc}, '-o', $binary_name, $test_file_name;
+			if ($result == 0) {
+				unlink $binary_name or die "Failed to unlink $binary_name:$!";
+				$optional{DEFINE} = '-DHAVE_CRYPT_URANDOM_UNISTD_GETENTROPY';
+			}
+		}
 	}
 	unlink $test_file_name or die "Failed to unlink $test_file_name:$!";
 }

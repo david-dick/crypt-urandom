@@ -7,6 +7,14 @@
 #else
 #ifdef HAVE_CRYPT_URANDOM_SYSCALL_GETRANDOM
 #include <sys/syscall.h>
+#else
+#ifdef HAVE_CRYPT_URANDOM_NATIVE_GETENTROPY
+#include <sys/random.h>
+#else
+#ifdef HAVE_CRYPT_URANDOM_UNISTD_GETENTROPY
+#include <unistd.h>
+#endif
+#endif
 #endif
 #endif
 #ifdef GRND_NONBLOCK
@@ -40,7 +48,15 @@ crypt_urandom_getrandom(buffer, length)
 #ifdef HAVE_CRYPT_URANDOM_SYSCALL_GETRANDOM
 	RETVAL = syscall(SYS_getrandom, data, length, GRND_NONBLOCK);
 #else
-        croak("Unable to find getrandom");
+#ifdef HAVE_CRYPT_URANDOM_NATIVE_GETENTROPY
+        RETVAL = getentropy(data, length);
+#else
+#ifdef HAVE_CRYPT_URANDOM_UNISTD_GETENTROPY
+        RETVAL = getentropy(data, length);
+#else
+        croak("Unable to find getrandom or an alternative");
+#endif
+#endif
 #endif
 #endif
         if (RETVAL == -1) {

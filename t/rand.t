@@ -1,7 +1,7 @@
-use Test::More tests => 8;
+use Test::More tests => 10;
 use Crypt::URandom();
 
-foreach my $correct (qw(500 50)) {
+foreach my $correct (qw(500000 500 50)) {
 	my $actual = length Crypt::URandom::urandom($correct);
         ok($actual == $correct, "Crypt::URandom::urandom($correct) returned $actual bytes");
 	$actual = length Crypt::URandom::urandom_ub($correct);
