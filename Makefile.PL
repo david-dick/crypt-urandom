@@ -2,9 +2,17 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
+
 my %optional;
 if ($^O ne 'MSWin32') {
 	eval `cat ./check_random.pl`;
+	if (($optional{DEFINE}) && ($optional{DEFINE} eq '-DNO_COMPILER_FOUND')) {
+		# figured this out from ExtUtils/MM_Unix.pm in has_link_code
+		$optional{OBJECT} = q[];
+		$optional{C} = [];
+		$optional{MYEXTLIB} = q[];
+		delete $optional{DEFINE};
+	}
 }
 
 WriteMakefile(

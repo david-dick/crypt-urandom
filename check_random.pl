@@ -76,6 +76,21 @@ _OUT_
 			if ($result == 0) {
 				unlink $binary_name or die "Failed to unlink $binary_name:$!";
 				$optional{DEFINE} = '-DHAVE_CRYPT_URANDOM_UNISTD_GETENTROPY';
+			} else {
+				open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
+				print FOO <<'_OUT_';
+int main(void)
+{
+        return 0;
+}
+_OUT_
+				close FOO or die "Failed to close $test_file_name:$!";
+				$result = system { $Config{cc} } $Config{cc}, '-o', $binary_name, $test_file_name;
+				if ($result == 0) {
+					unlink $binary_name or die "Failed to unlink $binary_name:$!";
+				} else {
+					$optional{DEFINE} = '-DNO_COMPILER_FOUND';
+				}
 			}
 		}
 	}
