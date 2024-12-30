@@ -37,4 +37,4 @@ eval {
 	$exception_thrown = 0;
 };
 chomp $@;
-ok($exception_thrown, "Correctly throws exception with none integer parameter:$@");
+ok($exception_thrown, "Correctly throws exception with non integer parameter:$@");
