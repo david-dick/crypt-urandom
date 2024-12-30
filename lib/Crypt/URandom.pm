@@ -48,7 +48,9 @@ use constant GETRANDOM_AVAILABLE => do {
         my $correct_length = 2;
         my $actual_length =
           crypt_urandom_getrandom( my $buffer = q[], $correct_length );
-        if ( $correct_length == $actual_length ) {
+        if (   ( defined $actual_length )
+            && ( $correct_length == $actual_length ) )
+        {
             $result = 1;
         }
         $result;
