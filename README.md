@@ -46,6 +46,14 @@ than or equal to Windows 2000.
     This call is a unbuffered sysread on non Win32 platforms that do not support
     [getrandom(2)](http://man.he.net/man2/getrandom) or equivalent.
 
+- `getrandom`
+
+    This function accepts an integer and returns a string of the same size
+    filled with random data on platforms that implement [getrandom(2)](http://man.he.net/man2/getrandom).
+    It will throw an exception if the requested amount of random data is not returned.
+    This is NOT portable across all operating systems, but is made available if
+    high-speed generation of random numbers is required.
+
 # DIAGNOSTICS
 
 - `No secure alternative for random number generation for Win32 versions older than W2K`

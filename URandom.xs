@@ -24,47 +24,38 @@
 #include <sys/types.h>
 #include <errno.h>
 
-MODULE = Crypt::URandom  PACKAGE = Crypt::URandom
+MODULE = Crypt::URandom  PACKAGE = Crypt::URandom  PREFIX = crypt_urandom_
 PROTOTYPES: ENABLE
 
-ssize_t
-crypt_urandom_getrandom(buffer, length)
-        SV *buffer
-        size_t length
+SV *
+crypt_urandom_getrandom(length)
+        ssize_t length
     PREINIT:
         char *data;
+        int result;
     CODE:
-        if (length >= SSIZE_MAX) {
-            errno = EFAULT;
-            XSRETURN_UNDEF;
-        }
-        STRLEN curlen;
-        SvPVbyte_force(buffer, curlen);
-        (void)curlen;
-        data = SvGROW(buffer, length + 1);
+	Newx(data, length + 1u, char);
 #ifdef HAVE_CRYPT_URANDOM_NATIVE_GETRANDOM
-        RETVAL = getrandom(data, length, GRND_NONBLOCK);
+        result = getrandom(data, length, GRND_NONBLOCK);
 #else
 #ifdef HAVE_CRYPT_URANDOM_SYSCALL_GETRANDOM
-	RETVAL = syscall(SYS_getrandom, data, length, GRND_NONBLOCK);
+	result = syscall(SYS_getrandom, data, length, GRND_NONBLOCK);
 #else
 #ifdef HAVE_CRYPT_URANDOM_NATIVE_GETENTROPY
-        RETVAL = getentropy(data, length);
+        result = getentropy(data, length);
 #else
 #ifdef HAVE_CRYPT_URANDOM_UNISTD_GETENTROPY
-        RETVAL = getentropy(data, length);
+        result = getentropy(data, length);
 #else
         croak("Unable to find getrandom or an alternative");
 #endif
 #endif
 #endif
 #endif
-        if (RETVAL == -1) {
-            XSRETURN_UNDEF;
+        if (result != length) {
+            croak("Only read %d bytes from getrandom", result);
         }
-        data[RETVAL] = '\0';
-        SvCUR_set(buffer, RETVAL);
-        SvUTF8_off(buffer);
-        SvSETMAGIC(buffer);
+        data[result] = '\0';
+        RETVAL = newSVpv(data, result);
     OUTPUT:
         RETVAL

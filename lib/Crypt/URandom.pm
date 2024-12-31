@@ -9,6 +9,7 @@ use Exporter();
 our @EXPORT_OK = qw(
   urandom
   urandom_ub
+  getrandom
 );
 
 our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
@@ -46,14 +47,7 @@ use constant GETRANDOM_AVAILABLE => do {
     my $result = 0;
     eval {
         my $correct_length = 2;
-        my $actual_length =
-          crypt_urandom_getrandom( my $buffer = q[], $correct_length );
-        if (   ( defined $actual_length )
-            && ( $correct_length == $actual_length ) )
-        {
-            $result = 1;
-        }
-        $result;
+        $result = getrandom($correct_length);
     } or do {
         $result = undef;
     };
@@ -189,13 +183,7 @@ sub _urandom {
         return $buffer;
     }
     elsif ( GETRANDOM_AVAILABLE() ) {
-        my $result = crypt_urandom_getrandom( my $buffer = q[], $length );
-        if ( $result == $length ) {
-            return $buffer;
-        }
-        else {
-            Carp::croak(qq[Only read $result bytes from getrandom]);
-        }
+        return getrandom($length);
     }
     else {
         my $result = $_urandom_handle->$type( my $buffer, $length );
@@ -277,6 +265,14 @@ random data is not returned.  The first call will initialize the native
 cryptographic libraries (if necessary) and load all the required Perl libraries.
 This call is a unbuffered sysread on non Win32 platforms that do not support
 L<getrandom(2)> or equivalent.
+
+=item C<getrandom>
+
+This function accepts an integer and returns a string of the same size
+filled with random data on platforms that implement L<getrandom(2)>.
+It will throw an exception if the requested amount of random data is not returned.
+This is NOT portable across all operating systems, but is made available if
+high-speed generation of random numbers is required.
 
 =back
 

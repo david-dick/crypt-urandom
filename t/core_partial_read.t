@@ -14,28 +14,22 @@ SKIP: {
 		use warnings;
 		require POSIX;
 		my $required_error_message = quotemeta "Only read 0 bytes from";
-		my %optional;
-		eval `cat ./check_random.pl`;
-		if ($optional{DEFINE}) {
-			diag("Found getrandom in $^O:$optional{DEFINE}");
-			skip("Found getrandom in $^O", 1);
-		} else {
-			require Crypt::URandom;
-			my $generated = 0;
-			eval {
-				Crypt::URandom::urandom(1);
-				$generated = 1;
-			};
-			chomp $@;
-			ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when partial read returns:$@");
-			$generated = 0;
-			eval {
-				Crypt::URandom::urandom_ub(1);
-				$generated = 1;
-			};
-			chomp $@;
-			ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when partial sysread returns:$@");
-		}
+		@INC = grep !/arch/, @INC; # making sure we're testing pure perl version
+		require Crypt::URandom;
+		my $generated = 0;
+		eval {
+			Crypt::URandom::urandom(1);
+			$generated = 1;
+		};
+		chomp $@;
+		ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when partial read returns:$@");
+		$generated = 0;
+		eval {
+			Crypt::URandom::urandom_ub(1);
+			$generated = 1;
+		};
+		chomp $@;
+		ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when partial sysread returns:$@");
 	}
 }
 done_testing();

@@ -8,6 +8,7 @@ lib/Crypt/URandom.pm
 t/00.load.t
 t/boilerplate.t
 t/pod.t
+t/pp.t
 t/rand.t
 t/export.t
 t/core_fork.t
