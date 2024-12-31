@@ -33,11 +33,11 @@ use constant PROV_RSA_FULL     => 1;
 use constant VERIFY_CONTEXT    => 4_026_531_840;    # hex 'F0000000'
 use constant W2K_MAJOR_VERSION => 5;
 use constant W2K_MINOR_VERSION => 0;
-
+use constant OS_FREEBSD => $OSNAME eq 'freebsd';
 use constant OS_WIN32 => $OSNAME eq 'MSWin32';
 use constant PATH     => do {
     my $path = '/dev/urandom';
-    if ( $OSNAME eq 'freebsd' ) {
+    if ( OS_FREEBSD() ) {
         $path = '/dev/random';    # FreeBSD's /dev/random is non-blocking
     }
     $path;
