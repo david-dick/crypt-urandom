@@ -23,7 +23,7 @@ OR
 This Module is intended to provide
 an interface to the strongest available source of non-blocking 
 randomness on the current platform.  Platforms currently supported are
-anything supporting getrandom(2), /dev/urandom and versions of Windows greater
+anything supporting [getrandom(2)](http://man.he.net/man2/getrandom), /dev/urandom and versions of Windows greater
 than or equal to Windows 2000.
 
 # SUBROUTINES/METHODS
@@ -31,18 +31,20 @@ than or equal to Windows 2000.
 - `urandom`
 
     This function accepts an integer and returns a string of the same size
-    filled with random data.  The first call will initialize the native
+    filled with random data. It will throw an exception if the requested amount of
+    random data is not returned. The first call will initialize the native
     cryptographic libraries (if necessary) and load all the required Perl libraries.
-    This call is a buffered read on non Win32 platforms that do not support getrandom(2)
+    This call is a buffered read on non Win32 platforms that do not support [getrandom(2)](http://man.he.net/man2/getrandom)
     or equivalent.
 
 - `urandom_ub`
 
     This function accepts an integer and returns a string of the same size
-    filled with random data.  The first call will initialize the native
+    filled with random data.  It will throw an exception if the requested amount of
+    random data is not returned.  The first call will initialize the native
     cryptographic libraries (if necessary) and load all the required Perl libraries.
     This call is a unbuffered sysread on non Win32 platforms that do not support
-    getrandom(2) or equivalent.
+    [getrandom(2)](http://man.he.net/man2/getrandom) or equivalent.
 
 # DIAGNOSTICS
 

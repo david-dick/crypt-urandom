@@ -31,18 +31,20 @@ SUBROUTINES/METHODS
     urandom
 
       This function accepts an integer and returns a string of the same
-      size filled with random data. The first call will initialize the
-      native cryptographic libraries (if necessary) and load all the
-      required Perl libraries. This call is a buffered read on non Win32
-      platforms that do not support getrandom(2) or equivalent.
+      size filled with random data. It will throw an exception if the
+      requested amount of random data is not returned. The first call will
+      initialize the native cryptographic libraries (if necessary) and load
+      all the required Perl libraries. This call is a buffered read on non
+      Win32 platforms that do not support getrandom(2) or equivalent.
 
     urandom_ub
 
       This function accepts an integer and returns a string of the same
-      size filled with random data. The first call will initialize the
-      native cryptographic libraries (if necessary) and load all the
-      required Perl libraries. This call is a unbuffered sysread on non
-      Win32 platforms that do not support getrandom(2) or equivalent.
+      size filled with random data. It will throw an exception if the
+      requested amount of random data is not returned. The first call will
+      initialize the native cryptographic libraries (if necessary) and load
+      all the required Perl libraries. This call is a unbuffered sysread on
+      non Win32 platforms that do not support getrandom(2) or equivalent.
 
 DIAGNOSTICS
 
