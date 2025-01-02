@@ -127,7 +127,7 @@ _RTLGENRANDOM_PROTO_
         require FileHandle;
         $_urandom_handle = FileHandle->new( PATH(), Fcntl::O_RDONLY() )
           or Carp::croak(
-            q[Failed to open '] . PATH() . qq['. " for reading:$OS_ERROR] );
+            q[Failed to open ] . PATH() . qq[ for reading:$OS_ERROR] );
         binmode $_urandom_handle;
     }
     return;
@@ -192,17 +192,18 @@ sub _urandom {
                 return $buffer;
             }
             else {
+                my $error = $EXTENDED_OS_ERROR;
                 $_urandom_handle = undef;
                 $_initialised    = undef;
                 Carp::croak(
-                    qq[Only read $result bytes from '] . PATH() . q['] );
+                    qq[Only read $result bytes from ] . PATH() . qq[:$error] );
             }
         }
         else {
-            my $error = $OS_ERROR;
+            my $error = $EXTENDED_OS_ERROR;
             $_urandom_handle = undef;
             $_initialised    = undef;
-            Carp::croak( q[Failed to read from '] . PATH() . qq[':$error] );
+            Carp::croak( q[Failed to read from ] . PATH() . qq[:$error] );
         }
     }
 }
