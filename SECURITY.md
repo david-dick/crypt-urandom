@@ -1,7 +1,7 @@
 This is the Security Policy for the Perl distribution Crypt-URandom.
 
 The latest version of this Security Policy can be found in the git repository at
-[https://github.com/robrwo/Crypt-URandom](https://github.com/robrwo/Crypt-URandom).
+[https://github.com/ddick/Crypt-URandom](https://github.com/ddick/Crypt-URandom).
 
 This text is based on the CPAN Security Group's Guidelines for Adding
 a Security Policy to Perl Distributions (version 0.1.9).
