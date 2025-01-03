@@ -1,5 +1,9 @@
 Revision history for Crypt-URandom
 
+0.44 - Fri Jan 03 19:58:22 2025
+       Added SECURITY.md.  Thanks to Robert Rothenberg for GH#10
+       Fixed GH#8 and GH#9 related to getrandom(2) support.  Thanks to Petr Pisar
+
 0.43 - Fri Jan 03 19:58:22 2025
        More fixes to test suite.  Thanks to Slaven Rezić for GH#6
 
