@@ -9,7 +9,7 @@ if ($^O eq 'MSWin32') {
 	$optional{C} = [];
 	$optional{MYEXTLIB} = q[];
 } else {
-	eval `cat ./check_random.pl`;
+	eval `cat ./check_random.inc`;
 	if (($optional{DEFINE}) && ($optional{DEFINE} eq '-DNO_COMPILER_FOUND')) {
 		# figured this out from ExtUtils/MM_Unix.pm in has_link_code
 		$optional{OBJECT} = q[];
