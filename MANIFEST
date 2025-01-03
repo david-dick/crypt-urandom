@@ -4,6 +4,7 @@ MANIFEST
 Makefile.PL
 README
 README.md
+SECURITY.md
 lib/Crypt/URandom.pm
 t/00.load.t
 t/boilerplate.t
