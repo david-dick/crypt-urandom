@@ -9,6 +9,7 @@ use English qw( -no_match_vars );
 use Exporter();
 use XSLoader();
 use constant;
+use overload;
 
 SKIP: {
 	if ($^O eq 'MSWin32') {

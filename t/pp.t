@@ -6,6 +6,7 @@ use English qw( -no_match_vars );
 use Exporter();
 use XSLoader();
 use constant;
+use overload;
 BEGIN {
 	if ($^O eq 'MSWin32') {
 		require Win32;
