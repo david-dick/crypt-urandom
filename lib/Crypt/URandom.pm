@@ -349,6 +349,10 @@ The /dev/urandom device returned an error when being opened
 
 Crypt::URandom requires no configuration files or environment variables.
 
+If the environment variable CRYPT_URANDOM_BUILD_DEBUG is specified when
+running C<perl Makefile.PL> or C<make test> AND L<getrandom(2)> or it's
+equivalents cannot be detected, extra debug will be shown to show the
+failures to detect these functions.
 
 =head1 DEPENDENCIES
 

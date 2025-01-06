@@ -112,6 +112,11 @@ than or equal to Windows 2000.
 
 Crypt::URandom requires no configuration files or environment variables.
 
+If the environment variable CRYPT\_URANDOM\_BUILD\_DEBUG is specified when
+running `perl Makefile.PL` or `make test` AND [getrandom(2)](http://man.he.net/man2/getrandom) or it's
+equivalents cannot be detected, extra debug will be shown to show the
+failures to detect these functions.
+
 # DEPENDENCIES
 
 > If the platform is Win32, the Win32::API module will be required.  Otherwise
