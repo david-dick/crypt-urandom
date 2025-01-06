@@ -12,6 +12,7 @@ my $binary_name = 'a.out';
 my $output = q[];
 open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
 print FOO <<'_OUT_';
+#include <sys/types.h>
 #include <sys/random.h>
 
 int main(void)
@@ -55,6 +56,7 @@ _OUT_
 		warn_or_diag "SYS_getrandom from sys/syscall is unavailable\n";
 		open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
 		print FOO <<'_OUT_';
+#include <sys/types.h>
 #include <sys/random.h>
 
 int main(void)
