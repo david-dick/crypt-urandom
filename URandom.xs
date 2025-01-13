@@ -42,10 +42,12 @@ crypt_urandom_getrandom(length)
 	result = syscall(SYS_getrandom, data, length, GRND_NONBLOCK);
 #else
 #ifdef HAVE_CRYPT_URANDOM_NATIVE_GETENTROPY
-        result = getentropy(data, length);
+        arc4random_buf(data, length);
+        result = length;
 #else
 #ifdef HAVE_CRYPT_URANDOM_UNISTD_GETENTROPY
-        result = getentropy(data, length);
+        arc4random_buf(data, length);
+        result = length;
 #else
         croak("Unable to find getrandom or an alternative");
 #endif

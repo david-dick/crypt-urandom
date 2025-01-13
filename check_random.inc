@@ -63,8 +63,8 @@ int main(void)
 {
         char buf[5];
         int l = 5;
-        int r = getentropy(buf, l);
-        return 0;
+        arc4random_buf(buf, l);
+        return l;
 }
 _OUT_
 		close FOO or die "Failed to close $test_file_name:$!";
@@ -83,8 +83,8 @@ int main(void)
 {
         char buf[5];
         int l = 5;
-        int r = getentropy(buf, l);
-        return 0;
+        arc4random_buf(buf, l);
+        return l;
 }
 _OUT_
 			close FOO or die "Failed to close $test_file_name:$!";
