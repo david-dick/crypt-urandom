@@ -53,9 +53,11 @@ crypt_urandom_getrandom(length)
 #endif
 #endif
         if (result != length) {
+            Safefree(data);
             croak("Only read %d bytes from getrandom:%s", result, strerror(errno));
         }
         data[result] = '\0';
         RETVAL = newSVpv(data, result);
+        Safefree(data);
     OUTPUT:
         RETVAL
