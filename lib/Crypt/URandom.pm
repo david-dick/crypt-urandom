@@ -401,8 +401,8 @@ David Dick  C<< <ddick@cpan.org> >>
 
 =for stopwords CryptoAPI Kanat-Alexander
 
-The Win32::API code for interacting with Microsoft's CryptoAPI was stolen with extreme
-gratitude from Crypt::Random::Source::Strong::Win32 by Max Kanat-Alexander
+The Win32::API code for interacting with Microsoft's L<CryptoAPI|https://en.wikipedia.org/wiki/Microsoft_CryptoAPI> was copied with extreme
+gratitude from L<Crypt::Random::Source::Strong::Win32|Crypt::Random::Source::Strong::Win32> by L<Max Kanat-Alexander|https://metacpan.org/author/MKANAT>
 
 =head1 LICENSE AND COPYRIGHT
 
