@@ -70,11 +70,11 @@ _OUT_
 		close FOO or die "Failed to close $test_file_name:$!";
 		$output .= `$Config{cc} -o $binary_name $test_file_name 2>&1`;
 		if ($? == 0) {
-			warn_or_diag "getentropy from sys/random is AVAILABLE\n";
+			warn_or_diag "arc4random_buf from sys/random is AVAILABLE\n";
 			unlink $binary_name or die "Failed to unlink $binary_name:$!";
 			$optional{DEFINE} = '-DHAVE_CRYPT_URANDOM_NATIVE_ARC4RANDOM_BUF';
 		} else {
-			warn_or_diag "getentropy from sys/random is unavailable\n";
+			warn_or_diag "arc4random_buf from sys/random is unavailable\n";
 			open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
 			print FOO <<'_OUT_';
 #include <unistd.h>
@@ -90,11 +90,11 @@ _OUT_
 			close FOO or die "Failed to close $test_file_name:$!";
 			$output .= `$Config{cc} -o $binary_name $test_file_name 2>&1`;
 			if ($? == 0) {
-				warn_or_diag "getentropy from unistd is AVAILABLE\n";
+				warn_or_diag "arc4random_buf from unistd is AVAILABLE\n";
 				unlink $binary_name or die "Failed to unlink $binary_name:$!";
 				$optional{DEFINE} = '-DHAVE_CRYPT_URANDOM_UNISTD_ARC4RANDOM_BUF';
 			} else {
-				warn_or_diag "getentropy from sys/random is unavailable\n";
+				warn_or_diag "arc4random_buf from unistd is unavailable\n";
 				open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
 				print FOO <<'_OUT_';
 #include <stdlib.h>
@@ -110,11 +110,11 @@ _OUT_
 				close FOO or die "Failed to close $test_file_name:$!";
 				$output .= `$Config{cc} -o $binary_name $test_file_name 2>&1`;
 				if ($? == 0) {
-					warn_or_diag "getentropy from stdlib is AVAILABLE\n";
+					warn_or_diag "arc4random_buf from stdlib is AVAILABLE\n";
 					unlink $binary_name or die "Failed to unlink $binary_name:$!";
 					$optional{DEFINE} = '-DHAVE_CRYPT_URANDOM_STDLIB_ARC4RANDOM_BUF';
 				} else {
-					warn_or_diag "getentropy from unistd is unavailable\n";
+					warn_or_diag "arc4random_buf from unistd is unavailable\n";
 					open FOO, ">$test_file_name" or die "Failed to open $test_file_name for writing:$!";
 					print FOO <<'_OUT_';
 int main(void)
