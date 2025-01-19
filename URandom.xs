@@ -9,11 +9,15 @@
 #ifdef HAVE_CRYPT_URANDOM_SYSCALL_GETRANDOM
 #include <sys/syscall.h>
 #else
-#ifdef HAVE_CRYPT_URANDOM_NATIVE_GETENTROPY
+#ifdef HAVE_CRYPT_URANDOM_NATIVE_ARC4RANDOM_BUF
 #include <sys/random.h>
 #else
-#ifdef HAVE_CRYPT_URANDOM_UNISTD_GETENTROPY
+#ifdef HAVE_CRYPT_URANDOM_UNISTD_ARC4RANDOM_BUF
 #include <unistd.h>
+#else
+#ifdef HAVE_CRYPT_URANDOM_STDLIB_ARC4RANDOM_BUF
+#include <stdlib.h>
+#endif
 #endif
 #endif
 #endif
@@ -42,15 +46,20 @@ crypt_urandom_getrandom(length)
 #ifdef HAVE_CRYPT_URANDOM_SYSCALL_GETRANDOM
         result = syscall(SYS_getrandom, data, length, GRND_NONBLOCK);
 #else
-#ifdef HAVE_CRYPT_URANDOM_NATIVE_GETENTROPY
+#ifdef HAVE_CRYPT_URANDOM_NATIVE_ARC4RANDOM_BUF
         arc4random_buf(data, length);
         result = length;
 #else
-#ifdef HAVE_CRYPT_URANDOM_UNISTD_GETENTROPY
+#ifdef HAVE_CRYPT_URANDOM_UNISTD_ARC4RANDOM_BUF
+        arc4random_buf(data, length);
+        result = length;
+#else
+#ifdef HAVE_CRYPT_URANDOM_STDLIB_ARC4RANDOM_BUF
         arc4random_buf(data, length);
         result = length;
 #else
         croak("Unable to find getrandom or an alternative");
+#endif
 #endif
 #endif
 #endif
