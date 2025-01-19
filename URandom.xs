@@ -34,12 +34,13 @@ crypt_urandom_getrandom(length)
         char *data;
         int result;
     CODE:
-	Newx(data, length + 1u, char);
+        Newx(data, length + 1u, char);
+      GETRANDOM:
 #ifdef HAVE_CRYPT_URANDOM_NATIVE_GETRANDOM
         result = getrandom(data, length, GRND_NONBLOCK);
 #else
 #ifdef HAVE_CRYPT_URANDOM_SYSCALL_GETRANDOM
-	result = syscall(SYS_getrandom, data, length, GRND_NONBLOCK);
+        result = syscall(SYS_getrandom, data, length, GRND_NONBLOCK);
 #else
 #ifdef HAVE_CRYPT_URANDOM_NATIVE_GETENTROPY
         arc4random_buf(data, length);
@@ -55,8 +56,12 @@ crypt_urandom_getrandom(length)
 #endif
 #endif
         if (result != length) {
-            Safefree(data);
-            croak("Only read %d bytes from getrandom:%s", result, strerror(errno));
+            if (errno == EINTR) {
+                goto GETRANDOM;
+            } else {
+                Safefree(data);
+                croak("Failed to getrandom:%s", strerror(errno));
+            }
         }
         data[result] = '\0';
         RETVAL = newSVpv(data, result);
