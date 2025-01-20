@@ -53,6 +53,7 @@ use constant GETRANDOM_AVAILABLE => do {
     };
     $result;
 };
+use constant SYSTEM_CALL_FAILED => -1;
 
 ## use critic
 
@@ -166,60 +167,70 @@ sub _urandom {
     if ( !GETRANDOM_AVAILABLE() ) {
         _init();
     }
+    if ( OS_WIN32() ) {
+        my $urandom = chr(0) x $length;
+        if ($_cryptgenrandom) {
+
+            my $result = $_cryptgenrandom->Call( $_context, $length, $urandom );
+            if ( !$result ) {
+                Carp::croak("CryptGenRandom failed: $EXTENDED_OS_ERROR");
+            }
+        }
+        elsif ($_rtlgenrand) {
+
+            my $result = $_rtlgenrand->Call( $urandom, $length );
+            if ( !$result ) {
+                Carp::croak("RtlGenRand failed: $EXTENDED_OS_ERROR");
+            }
+        }
+        return $urandom;
+    }
+    elsif ( GETRANDOM_AVAILABLE() ) {
+        return getrandom($length);
+    }
+    else {
+        return _read_urandom_fs( $type, $length );
+    }
+    return;
+}
+
+sub _read_urandom_fs {
+    my ( $type, $length ) = @_;
     my $original_length = $length;
     my $urandom;
   BUFFER_FILLED: {
-        if ( OS_WIN32() ) {
-            $urandom = chr(0) x $length;
-            if ($_cryptgenrandom) {
-
-                my $result =
-                  $_cryptgenrandom->Call( $_context, $length, $urandom );
-                if ( !$result ) {
-                    Carp::croak("CryptGenRandom failed: $EXTENDED_OS_ERROR");
-                }
+        my $result;
+        if ( defined $urandom ) {
+            $length = $original_length - ( length $urandom );
+            $result = $_urandom_handle->$type( my $buffer, $length );
+            if ( defined $buffer ) {
+                $urandom .= $buffer;
             }
-            elsif ($_rtlgenrand) {
-
-                my $result = $_rtlgenrand->Call( $urandom, $length );
-                if ( !$result ) {
-                    Carp::croak("RtlGenRand failed: $EXTENDED_OS_ERROR");
-                }
-            }
-        }
-        elsif ( GETRANDOM_AVAILABLE() ) {
-            return getrandom($length);
         }
         else {
-            my $result;
-            if ( defined $urandom ) {
-                $length = $original_length - ( length $urandom );
-                $result .= $_urandom_handle->$type( my $buffer, $length );
-                if ( defined $result ) {
-                    $urandom .= $buffer;
-                }
+            $result = $_urandom_handle->$type( my $buffer, $length );
+            if ( defined $buffer ) {
+                $urandom .= $buffer;
             }
-            else {
-                $result = $_urandom_handle->$type( my $buffer, $length );
-                if ( defined $result ) {
-                    $urandom .= $buffer;
-                }
-            }
-            if (   ( defined $urandom )
-                && ( length $urandom == $original_length ) )
-            {
-                return $urandom;
-            }
-            elsif ( $OS_ERROR == POSIX::EINTR() ) {
-                redo BUFFER_FILLED;
-            }
-            else {
-                my $returned_bytes = length $urandom;
-                my $error          = $EXTENDED_OS_ERROR;
-                $_urandom_handle = undef;
-                $_initialised    = undef;
-                Carp::croak( q[Failed to read from ] . PATH() . qq[:$error] );
-            }
+        }
+        if (   ( defined $urandom )
+            && ( length $urandom == $original_length ) )
+        {
+        }
+        elsif (( $result == SYSTEM_CALL_FAILED() )
+            && ( $OS_ERROR == POSIX::EINTR() ) )
+        {
+            redo BUFFER_FILLED;
+        }
+        elsif ( $result != SYSTEM_CALL_FAILED() ) {
+            redo BUFFER_FILLED;
+        }
+        else {
+            my $returned_bytes = length $urandom;
+            my $error          = $EXTENDED_OS_ERROR;
+            $_urandom_handle = undef;
+            $_initialised    = undef;
+            Carp::croak( q[Failed to read from ] . PATH() . qq[:$error] );
         }
     }
     return $urandom;
