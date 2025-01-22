@@ -1,5 +1,8 @@
 Revision history for Crypt-URandom
 
+0.52  Thu Jan 23 06:33:51 2025
+     - Fixes to test suite.  Thanks to Petr Pisar for GH#17
+
 0.51  Wed Jan 22 22:18:19 2025
      - Improvements to handling SIGINT.  Thanks to Leon Timmermans for GH#14
      - Memory leak fix.  Thanks to Leon Timmermans for GH#15
