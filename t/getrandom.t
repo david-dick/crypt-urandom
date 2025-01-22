@@ -49,7 +49,7 @@ _OUT_
 			my $handle = FileHandle->new();
 
 			if (my $pid = $handle->open(q[-|])) {
-				my $line = <$handle>;
+				my $result = $handle->read(my $line, $correct_length + 5);
 				chomp $line;
 				my $actual_length = length $line;
 				ok($actual_length == $correct_length, "getrandom hit with INT signal after $failed_number_of_bytes bytes recovers to produce correct length of $correct_length bytes:$actual_length");
@@ -87,7 +87,7 @@ _OUT_
 			$handle = FileHandle->new();
 
 			if (my $pid = $handle->open(q[-|])) {
-				my $line = <$handle>;
+				my $result = $handle->read(my $line, 4000);
 				chomp $line;
 				my ($actual_error, $entire_message) = split /\t/smx, $line;
 				$! = POSIX::EAGAIN();
