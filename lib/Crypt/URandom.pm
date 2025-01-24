@@ -226,8 +226,7 @@ sub _read_urandom_fs {
             redo BUFFER_FILLED;
         }
         else {
-            my $returned_bytes = length $urandom;
-            my $error          = $EXTENDED_OS_ERROR;
+            my $error = $EXTENDED_OS_ERROR;
             $_urandom_handle = undef;
             $_initialised    = undef;
             Carp::croak( q[Failed to read from ] . PATH() . qq[:$error] );
