@@ -22,4 +22,4 @@ requires:
   English: '0'
   FileHandle: '0'
   Test::More: '0'
-version: '0.53'
+version: '0.54'
