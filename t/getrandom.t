@@ -64,7 +64,7 @@ _OUT_
 			} elsif (defined $pid) {
 				local $ENV{LD_PRELOAD} = $binary_path;
 				eval {
-					exec { $^X } $^X, (map { "-I$_" } @INC), @extra_args, '-MCrypt::URandom', '-e', 'my $data = Crypt::URandom::getrandom(' . $correct_length . '); print "$data\n"; exit 0;' or die "Failed to exec $^X:$!";
+					exec { $^X } $^X, (map { "-I$_" } @INC), @extra_args, '-MCrypt::URandom', '-e', 'binmode STDOUT; my $data = Crypt::URandom::getrandom(' . $correct_length . '); print "$data\n"; exit 0;' or die "Failed to exec $^X:$!";
 				} or do {
 					warn "$@";
 				};
@@ -106,7 +106,7 @@ _OUT_
 			} elsif (defined $pid) {
 				local $ENV{LD_PRELOAD} = $binary_path;
 				eval {
-					exec { $^X } $^X, (map { "-I$_" } @INC), @extra_args, '-MEncode', '-MCrypt::URandom', '-e', 'eval { Crypt::URandom::getrandom(28); } or do { print Encode::encode("UTF-8", "$!\t$@\n"); exit 0 }; exit 1;' or die "Failed to exec $^X:$!";
+					exec { $^X } $^X, (map { "-I$_" } @INC), @extra_args, '-MEncode', '-MCrypt::URandom', '-e', 'binmode STDOUT; eval { Crypt::URandom::getrandom(28); } or do { print Encode::encode("UTF-8", "$!\t$@\n"); exit 0 }; exit 1;' or die "Failed to exec $^X:$!";
 				} or do {
 					warn "$@";
 				};
