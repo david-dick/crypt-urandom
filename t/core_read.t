@@ -70,6 +70,36 @@ SKIP: {
 		};
 		chomp $@;
 		ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when sysread is overridden twice:$@");
+		no warnings;
+		*CORE::GLOBAL::read = sub { $! = POSIX::EINTR(); return };
+		*CORE::GLOBAL::sysread = sub { $! = POSIX::EINTR(); return };
+		use warnings;
+		$required_error_message = q[(?:] . (quotemeta POSIX::strerror(POSIX::EINTR())) . q[|Interrupted[ ]system[ ]call)];
+		$generated = 0;
+		eval {
+			Crypt::URandom::urandom(1);
+			$generated = 1;
+		};
+		chomp $@;
+		ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when read is overridden:$@");
+		$generated = 0;
+		eval {
+			Crypt::URandom::urandom(1);
+			$generated = 1;
+		};
+		chomp $@;
+		ok(!$generated && $@ =~ /$required_error_message/smx, "Correct exception thrown when read is overridden twice:$@");
+		no warnings;
+		*CORE::GLOBAL::read = sub { $! = undef; return 0 };
+		*CORE::GLOBAL::sysread = sub { $! = undef; return 0 };
+		use warnings;
+		$generated = 0;
+		eval {
+			Crypt::URandom::urandom(1);
+			$generated = 1;
+		};
+		chomp $@;
+		ok(!$generated && $@ =~ /EOF/smx, "Correct exception thrown when read is overridden:$@");
 	}
 }
 done_testing();
