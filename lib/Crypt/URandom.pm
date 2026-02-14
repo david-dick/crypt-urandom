@@ -115,7 +115,7 @@ sub _init {
             }
             else {
                 my $rtlgenrand =
-                  Win32::API->new( 'advapi32', <<'_RTLGENRANDOM_PROTO_');
+                  Win32::API->new( 'advapi32', <<'_RTLGENRANDOM_PROTO_' );
 INT SystemFunction036(
   PVOID RandomBuffer,
   ULONG RandomBufferLength
