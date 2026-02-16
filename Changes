@@ -1,5 +1,10 @@
 Revision history for Crypt-URandom
 
+0.55  Tue Feb 17 07:01:43 2026
+     - Fix for sysread/read failures.  Thanks to Miha Purg for GH#20
+     - Fix for test suite failures on STDOUT encoding.  Thanks to Lukas Mai for GH#19
+     - Fix for CVE-2026-2474
+
 0.54  Sat Mar 15 20:37:13 2025
      - Reverse solaris changes and remove errstr checks.  Thanks to eserte for GH#18
 

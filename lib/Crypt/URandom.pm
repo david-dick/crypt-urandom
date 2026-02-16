@@ -17,7 +17,7 @@ our %EXPORT_TAGS = ( 'all' => \@EXPORT_OK, );
 our @CARP_NOT = ('Crypt::URandom');
 
 BEGIN {
-    our $VERSION = '0.54';
+    our $VERSION = '0.55';
     eval {
         require XSLoader;
 
@@ -256,7 +256,7 @@ Crypt::URandom - Provide non blocking randomness
 
 =head1 VERSION
 
-This document describes Crypt::URandom version 0.54
+This document describes Crypt::URandom version 0.55
 
 
 =head1 SYNOPSIS
