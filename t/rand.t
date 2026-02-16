@@ -1,4 +1,4 @@
-use Test::More tests => 10;
+use Test::More tests => 11;
 use Crypt::URandom();
 
 foreach my $correct (qw(500000 500 50)) {
@@ -38,3 +38,10 @@ eval {
 };
 chomp $@;
 ok($exception_thrown, "Correctly throws exception with non integer parameter:$@");
+$exception_thrown = 1;
+eval {
+	Crypt::URandom::getrandom(-1);
+	$exception_thrown = 0;
+};
+chomp $@;
+ok($exception_thrown, "getrandom correctly throws exception with less than zero parameter:$@");

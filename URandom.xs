@@ -38,6 +38,9 @@ crypt_urandom_getrandom(length)
         char *data;
         int result;
     CODE:
+        if (length < 0) {
+            croak("The length argument cannot be less than 0");
+        }
         Newx(data, length + 1u, char);
       GETRANDOM:
 #ifdef HAVE_CRYPT_URANDOM_NATIVE_GETRANDOM
